@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: challan-as-deployment
+  labels:
+    app: challan-as
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: challan-as
+  template:
+    metadata:
+      labels:
+        app: challan-as
+    spec:
+      containers: 
+        - name: challan-as
+          image: bezve01/challan_as:latest
+          ports:
+            - containerPort: 8002
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: challan-as
+  namespace: default
+spec:
+  selector:
+    app: challan-as
+  ports:
+    - protocol: TCP
+      # Pod Port within the cluster
+      port: 8002
+      # targetPort is application listening port or containerPort
+      targetPort: 8002   
+  type: NodePort
